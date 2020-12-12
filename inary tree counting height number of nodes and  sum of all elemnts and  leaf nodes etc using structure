@@ -1,0 +1,369 @@
+#include<iostream>
+using namespace std;
+
+struct node
+{
+    struct node *lchild;
+    int data;
+    struct node *rchild;
+};
+struct queue
+{
+    int size;
+    int front;
+    int rear;
+    struct node **qu;
+};
+struct stack
+{
+    int size;
+    int top;
+    struct node **s;
+
+};
+void stackcreate(struct stack *st,int size)
+{
+    st->size=size;
+    st->top=-1;
+    st->s=new node * [(st->size)*sizeof(struct node *)];
+
+}
+
+void push(struct stack *st,struct node *x)
+{
+    if(st->top==st->size-1)
+    {
+        cout<<"stack overflow";
+    }
+    else
+    {
+        st->top++;
+        st->s[st->top]=x;
+    }
+}
+struct node *pop(struct stack *st)
+{
+    struct node *x=nullptr;
+    if(st->top==-1)
+    {
+        cout<<"stack underflow";
+
+    }
+    else
+    {
+        x=st->s[st->top];
+        st->top--;
+    }
+    return x;
+}
+ int isstackempty(struct stack st)
+ {
+     if(st.top==-1)
+        return 1;
+     else
+        return 0;
+ }
+int isstackfull(struct stack st)
+ {
+     return st.top==st.size-1;
+
+ }
+
+
+ // empty of stack definition*//
+void create(struct queue *q,int size)
+{
+    q->size=size;
+    q->front =q->rear=0;
+    q->qu = new node * [(q->size)*sizeof(node*)];
+
+}
+
+void enqueue(struct queue *q,struct node *x)
+{
+    if((q->rear+1)%q->size==q->front)
+        cout<<"queue is full";
+    else
+        q->rear=(q->rear+1)%q->size;
+        q->qu[q->rear]=x;
+
+}
+
+struct node *dequeue(struct queue *q)
+{
+    struct node *x=nullptr;
+    if(q->front==q->rear)
+        cout<<"queue is empty";
+    else
+    {
+        q->front=(q->front+1)%q->size;
+        x=q->qu[q->front];
+    }
+    return x;
+}
+
+int isqueueEmpty(struct queue q)
+{
+return q.front==q.rear;
+}
+
+// empty of queue definition //
+
+struct node *root=nullptr;
+void Treecreate()
+{
+struct node *p,*t;
+int x;
+struct queue q;
+create(&q,100);
+cout<<"Eneter root value"<<" : ";
+cin>>x;
+root= new struct node  [sizeof(struct node)];
+root->data=x;
+root->lchild=root->rchild=nullptr;
+enqueue(&q,root);
+while(!isqueueEmpty(q))
+{
+p=dequeue(&q);
+cout<<"eneter left child of"<<p->data<<" : ";
+cin>>x;
+if(x!=-1)
+{
+t=new struct node [sizeof(struct node)];
+t->data=x;
+t->lchild=t->rchild=nullptr;
+p->lchild=t;
+enqueue(&q,t);
+}
+cout<<"eneter right child of"<<p->data<<" : ";
+cin>>x;
+if(x!=-1)
+{
+t=new struct node [sizeof(struct node)];
+t->data=x;
+t->lchild=t->rchild=nullptr;
+p->rchild=t;
+enqueue(&q,t);
+}
+}
+}
+
+
+int Height(struct node *p) {
+    int x = 0;
+    int y = 0;
+    if (p == nullptr){
+        return 0;
+    }
+
+    x = Height(p->lchild);
+    y = Height(p->rchild);
+
+    if (x> y){
+        return x + 1;
+    } else {
+        return y + 1;
+    }
+}
+
+// to count number of nodes //
+int count(struct node *p)
+{
+    int x,y;
+    if(p!=nullptr)
+    {
+        x=count(p->lchild);
+        y=count(p->rchild);
+        return (x+y+1);
+    }
+    return 0;
+}
+
+// function to count nodes with degree 2//
+int countnodesofdegree2(struct node *p)
+{
+    int x,y;
+    if(p!=nullptr)
+    {
+        x=countnodesofdegree2(p->lchild);
+        y=countnodesofdegree2(p->rchild);
+        if(p->lchild && p->rchild)
+            return x+y+1;
+        else
+            return x+y;
+    }
+}
+
+// addition of all elements of node//
+ int sum(struct node *p)
+ {
+     int x=0,y=0;
+     if(p!=nullptr)
+     {
+         x=sum(p->lchild);
+         y=sum(p->rchild);
+
+         return x+y+p->data;
+     }
+ }
+
+ // counting leaf node//
+ int countleafnode(struct node *p)
+ {
+     int x=0,y=0;
+     if(p!=nullptr)
+     {
+         x=count(p->lchild);
+         y=count(p->rchild);
+         if(p->lchild==nullptr && p->rchild==nullptr)
+            return x+y+1;
+            else
+            return x+y;
+    }
+    else
+        return 0;
+ }
+
+ // to count nodes with degree0 //
+ int countnodewithdegree1(struct node *p)
+ {
+     int x=0,y=0;
+     x=countnodewithdegree1(p->lchild);
+     y=countnodewithdegree1(p->rchild);
+
+     if(p->lchild!=nullptr ^ p->rchild!=nullptr)
+        return x+y+1;
+     else
+        return x+y;
+ }
+
+void iterativePreorder(struct node *p) {
+    struct stack stk;
+    stackcreate(&stk,100);
+    while (p != nullptr || !isstackempty(stk)){
+        if (p != nullptr)
+            {
+            cout << p->data << " ";
+            push(&stk,p);
+            p = p->lchild;
+
+            }
+        else
+            {
+            p =pop(&stk);
+
+            p = p->rchild;
+            }
+    }
+cout<<endl;
+}
+
+void iterativeinorder(struct node *p)
+{
+    struct stack st;
+    stackcreate(&st,100);
+    while(p!=nullptr || !isstackempty(st))
+    {
+        if(p!=nullptr)
+    {
+        push(&st,p);
+        p=p->lchild;
+
+    }
+    else
+    {
+        p=pop(&st);
+        cout<<p->data<<" ";
+        p=p->rchild;
+    }
+}
+cout<<endl;
+}
+
+void iterativepostorder(struct node *p)
+{
+    struct stack st;
+    stackcreate(&st,100);
+    long int temp;
+    while(p!=nullptr || !isstackempty(st))
+    {
+        if(p!=nullptr)
+        {
+            push(&st,p);
+            p=p->lchild;
+        }
+        else
+        {
+            temp=int (pop(&st));
+            if(temp>0)
+            {
+                push(&st,((node*)(-1*temp)));
+                p=((node*)temp)->rchild;
+
+            }
+            else
+            {
+                cout<<((node*)(-1*temp))->data<<" ";
+                p=nullptr;
+            }
+        }
+
+    }
+    cout<<endl;
+}
+
+void levelorder(struct node *p)
+{
+    struct queue q;
+    create(&q,100);
+    cout<<p->data<<" ";
+    enqueue(&q,p);
+    while(!isqueueEmpty(q))
+    {
+        p=dequeue(&q);
+        if(p->lchild)
+        {
+            cout<<p->lchild->data<<" ";
+            enqueue(&q,p->lchild);
+
+        }
+        if(p->rchild)
+        {
+            cout<<p->rchild->data<<" ";
+            enqueue(&q,p->rchild);
+        }
+    }
+    cout<<endl;
+}
+int main()
+{
+Treecreate();
+cout<<"height"<<" : "<<Height(root)<<endl;
+
+cout<<"number of nodes in tree is"<<" : "<<count(root)<<endl;
+
+cout<<"number of nodes with degree 2"<<" : "<<countnodesofdegree2(root)<<endl;
+
+cout<<"number of leaf node is"<<" : "<<countleafnode(root)<<endl;
+
+cout<<"number of nodes with degree exactly  1  is "<<" : " <<countnodewithdegree1(root)<<endl;
+
+cout<<"sum of all elements in the tree is"<<" : "<<sum(root);
+
+
+cout<<"\n";
+cout<<"iterative preorder"<<endl;
+iterativePreorder(root);
+
+
+cout<<"iterative inorder"<<endl;
+iterativeinorder(root);
+//
+cout<<"iterative postorder"<<endl;
+iterativepostorder(root);
+
+cout<<"levelorder"<<endl;;
+levelorder(root);
+return 0;
+}
+
